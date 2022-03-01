@@ -33,9 +33,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                   
                  self.movies = dataDictionary["results"] as! [[String : Any]]
                  self.tableView.reloadData()
-                 
-
-
              }
         }
         task.resume()
@@ -54,6 +51,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.titleLabel?.text = title as? String
         cell.movieDescription?.text = description as? String
+        //cell.titleLabel.sizeToFit() learn about auto-layout.
+        //cell.movieDescription.sizeToFit()
         
         let baseUrl = "https://image.tmdb.org/t/p/w185"
         let posterPath = movies[indexPath.row]["poster_path"] as! String
@@ -62,6 +61,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.posterView.af.setImage(withURL: posterUrl!)
         
         return cell
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UITableViewCell
+        let index = tableView.indexPath(for: cell)!
+        let movie = movies[index.row]
+        
+        let detailsViewController = segue.destination as! MoviesDetailsViewController
+        detailsViewController.movie = movie
+        
+        tableView.deselectRow(at: index, animated: true)
     }
  
 
