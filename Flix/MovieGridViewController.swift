@@ -11,6 +11,7 @@ import AlamofireImage
 class MovieGridViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var collectionView: UICollectionView!
+
     
     var movies = [[String:Any]]()
     
@@ -18,6 +19,11 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource, UIC
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10 // some minimum value is set, won't go below that
+     
         
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -55,6 +61,19 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource, UIC
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies.count
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let poster = sender as! UICollectionViewCell
+        let index = collectionView.indexPath(for: poster)!
+        //let index = tableView.indexPath(for: cell)!
+        let movie = movies[index.row]
+
+        let detailsViewController = segue.destination as! MoviesDetailsViewController
+        detailsViewController.movie = movie
+        collectionView.deselectItem(at: index, animated: true)
+        //collectionView.deselectRow(at: index, animated: true)
+    }
+    
 
 
 }
